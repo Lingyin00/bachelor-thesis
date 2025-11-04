@@ -1,13 +1,9 @@
 # bachelor-thesis
 
-## GitHub configuration
+formalizing selected exercises from _Abstract Algebra_ by Dummit&Forte
 
-To set up your new GitHub repository, follow these steps:
+## theorems
 
-* Under your repository name, click **Settings**.
-* In the **Actions** section of the sidebar, click "General".
-* Check the box **Allow GitHub Actions to create and approve pull requests**.
-* Click the **Pages** section of the settings sidebar.
-* In the **Source** dropdown menu, select "GitHub Actions".
+- AbelianSimpleG (from exercise 3.4.1): without the premises that _G_ is *finite*.
+- HallGroup (from exercise 3.3.10): about definitions of _Hall Group_ and orders
 
-After following the steps above, you can remove this section from the README file.
