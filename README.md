@@ -1,3 +1,8 @@
+[![Lean Action CI](https://github.com/Lingyin00/bachelor-thesis/actions/workflows/lean_action_ci.yml/badge.svg)](https://github.com/Lingyin00/bachelor-thesis/actions/workflows/lean_action_ci.yml)
+[![Lean](https://img.shields.io/badge/Lean-4.25.0--rc2-blue.svg)](https://leanprover-community.github.io/)
+[![mathlib4](https://img.shields.io/badge/mathlib4-5b49109-brightgreen.svg)](https://github.com/leanprover-community/mathlib4)
+
+
 # Bachelor-Thesis
 
 This formalization project follows the narrative of _Chapter 3: Quotient Groups and Homomorphisms_ from _**Abstract Algebra**_ by Dummit & Foote.  
