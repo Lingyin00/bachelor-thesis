@@ -8,7 +8,6 @@ import Mathlib.Algebra.Group.Subgroup.ZPowers.Basic
 import Mathlib.GroupTheory.OrderOfElement
 import Mathlib.GroupTheory.Subgroup.Simple
 import Mathlib.Algebra.Group.Subgroup.Finite
---import Mathlib.Dynamics.PeriodicPts.Defs
 
 noncomputable section -- on the Prop level
 open scoped Classical -- using classical logic
@@ -24,13 +23,19 @@ def addIso_from_zmod_natcard :
   zmodAddCyclicAddEquiv (G := Additive G) (by infer_instance)
 
 /-! Using g to build a finite cyclic group-/
-lemma Finite_of_FinOrder_Generator (g : G) (hp : ¬orderOf g = 0) : Finite (Subgroup.zpowers g) :=
-  by
-    have : orderOf g > 0 := by exact Nat.zero_lt_of_ne_zero hp
-    let n := orderOf g
-    have h : g ^ n = (1 : G) := by exact pow_orderOf_eq_one g
+lemma Finite_of_FinOrder_Generator (g : G) (hp : ¬orderOf g = 0) : Finite (Subgroup.zpowers g) := by
+  have : orderOf g > 0 := by exact Nat.zero_lt_of_ne_zero hp
+  let n := orderOf g
+  have h : g ^ n = (1 : G) := by exact pow_orderOf_eq_one g
+  -- `change` tactic
+  -- #find_home Soubgroup.finite
+  -- using IsOfFinite
     -- **maybe try to construct a surjection again here???**
-    sorry
+    -- try to use Finite.of_surjective : ∀ {α β} [Finite α] (f : α → β), Surjective f → Finite β
+    -- we know that ZMod g is finite
+    -- construt a surjective Homomorphism from Zmod n → ⟨g⟩
+    -- then using Finite.of_surjective, we could show the finiteness
+  sorry
 
 
 /-! Finitness of an abelian simple group -/
@@ -54,6 +59,7 @@ lemma FiniteOfSimpleCyclic : (Finite G) := by
   -- H ≠ ⊤
   have hneq_Top : H ≠ ⊤ := by
     intro htop
+    -- show that odd elements ∈ T but not in H
     sorry
   -- H ≠ ⊥
   have hneq_bot : H ≠ ⊥ := by
@@ -67,20 +73,19 @@ lemma FiniteOfSimpleCyclic : (Finite G) := by
 
 
 /-！Main theorem : if G is an abelian simple group then G ≃* Zₚ for some prime p. -/
-theorem AbelianSimpleGroupIsoOfZp : ∃ p : ℕ , (Nat.Prime p) ∧ Nonempty (Additive G ≃+ ZMod p) :=
-  by
-    have hcyc : IsCyclic G := by infer_instance -- a simple abelian group is cyclic
-    rcases (isCyclic_iff_exists_zpowers_eq_top.mp hcyc) with ⟨g, hg⟩ -- get the generator
-    let p : ℕ := orderOf g -- get the order of g, not assuming g ≠ 0 here
-    have orderG : Nat.card G = p := by exact Eq.symm (orderOf_eq_card_of_zpowers_eq_top hg)
-    have FinG : Finite G := by exact FiniteOfSimpleCyclic
-    -- using the mathlib theorem about prime_card
-    have hp : Nat.Prime p := by rw [← orderG]; apply IsSimpleGroup.prime_card
-    use p
-    constructor
-    · assumption
-    · refine Nonempty.intro ?_
-      rw [← orderG]
-      have e : ZMod (Nat.card G) ≃+ Additive G := by
-        simpa using (addIso_from_zmod_natcard (G := G))
-      exact e.symm
+theorem AbelianSimpleGroupIsoOfZp : ∃ p : ℕ , (Nat.Prime p) ∧ Nonempty (Additive G ≃+ ZMod p) := by
+  have hcyc : IsCyclic G := by infer_instance -- a simple abelian group is cyclic
+  rcases (isCyclic_iff_exists_zpowers_eq_top.mp hcyc) with ⟨g, hg⟩ -- get the generator
+  let p : ℕ := orderOf g -- get the order of g, not assuming g ≠ 0 here
+  have orderG : Nat.card G = p := by exact Eq.symm (orderOf_eq_card_of_zpowers_eq_top hg)
+  have FinG : Finite G := by exact FiniteOfSimpleCyclic
+  -- using the mathlib theorem about prime_card
+  have hp : Nat.Prime p := by rw [← orderG]; apply IsSimpleGroup.prime_card
+  use p
+  constructor
+  · assumption
+  · refine Nonempty.intro ?_
+    rw [← orderG]
+    have e : ZMod (Nat.card G) ≃+ Additive G := by
+      simpa using (addIso_from_zmod_natcard (G := G))
+    exact e.symm
