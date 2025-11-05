@@ -6,7 +6,7 @@ import Mathlib.GroupTheory.QuotientGroup.Defs
 import Mathlib.GroupTheory.Coset.Card
 import Mathlib.GroupTheory.Coset.Defs
 /-!
-Exercise 3.3.10 *Hall Group*
+Exercise 3.3.10 `Hall Group`
 -- A subgroup H of a finite group G is called a Hall Group of G if (|G : H|, |H|) = 1.
 -- Prove that if H is a Hall subgroup of G and N is the normal subgroup of G,
 -- then H ⊓ N is a Hall subgroup of N and HN ⧸ N is a Hall subgroup of G ⧸ N.

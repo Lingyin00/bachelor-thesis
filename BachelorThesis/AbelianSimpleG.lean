@@ -14,7 +14,7 @@ noncomputable section -- on the Prop level
 open scoped Classical -- using classical logic
 
 /-!
-Exercise 3.4.1 *Abelian Simple Group*
+Exercise 3.4.1 `Abelian Simple Group`
 -- Prove that if G is an abelian simple group then G ≃* Zₚ for some prime p
 -/
 variable {G : Type*} [CommGroup G] [IsSimpleGroup G]
@@ -27,9 +27,11 @@ def addIso_from_zmod_natcard :
 lemma Finite_of_FinOrder_Generator (g : G) (hp : ¬orderOf g = 0) : Finite (Subgroup.zpowers g) :=
   by
     have : orderOf g > 0 := by exact Nat.zero_lt_of_ne_zero hp
-    --have hg : IsCyclic (Subgroup.zpowers g) := by exact Subgroup.isCyclic (Subgroup.zpowers g)
-    have hfg : IsOfFinOrder g := orderOf_pos_iff.mp this
+    let n := orderOf g
+    have h : g ^ n = (1 : G) := by exact pow_orderOf_eq_one g
+    -- **maybe try to construct a surjection again here???**
     sorry
+
 
 /-! Finitness of an abelian simple group -/
 lemma FiniteOfSimpleCyclic : (Finite G) := by
