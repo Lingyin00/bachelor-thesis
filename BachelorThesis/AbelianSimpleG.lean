@@ -8,6 +8,7 @@ import Mathlib.Algebra.Group.Subgroup.ZPowers.Basic
 import Mathlib.GroupTheory.OrderOfElement
 import Mathlib.GroupTheory.Subgroup.Simple
 import Mathlib.Algebra.Group.Subgroup.Finite
+import Mathlib.Data.Finite.Defs
 
 noncomputable section -- on the Prop level
 open scoped Classical -- using classical logic
@@ -18,25 +19,14 @@ Exercise 3.4.1 `Abelian Simple Group`
 -/
 variable {G : Type*} [CommGroup G] [IsSimpleGroup G]
 
-def addIso_from_zmod_natcard :
-    ZMod (Nat.card (Additive G)) ≃+ Additive G :=
-  zmodAddCyclicAddEquiv (G := Additive G) (by infer_instance)
+-- **this small lemma might be a PR to mathlib**
+@[simp]
+lemma finiteCyclicIffFiniteCarrier  (g : G) (hp : ¬orderOf g = 0) :
+    Finite (Subgroup.zpowers g) = ((Subgroup.zpowers g) : Set G).Finite := by exact rfl
 
 /-! Using g to build a finite cyclic group-/
-lemma Finite_of_FinOrder_Generator (g : G) (hp : ¬orderOf g = 0) : Finite (Subgroup.zpowers g) := by
-  have : orderOf g > 0 := by exact Nat.zero_lt_of_ne_zero hp
-  let n := orderOf g
-  have h : g ^ n = (1 : G) := by exact pow_orderOf_eq_one g
-  -- `change` tactic
-  -- #find_home Soubgroup.finite
-  -- using IsOfFinite
-    -- **maybe try to construct a surjection again here???**
-    -- try to use Finite.of_surjective : ∀ {α β} [Finite α] (f : α → β), Surjective f → Finite β
-    -- we know that ZMod g is finite
-    -- construt a surjective Homomorphism from Zmod n → ⟨g⟩
-    -- then using Finite.of_surjective, we could show the finiteness
-  sorry
-
+lemma finiteOfFinOrderGenerator (g : G) (hp : ¬orderOf g = 0) : Finite (Subgroup.zpowers g) := by
+  simp_all
 
 /-! Finitness of an abelian simple group -/
 lemma FiniteOfSimpleCyclic : (Finite G) := by
@@ -47,7 +37,7 @@ lemma FiniteOfSimpleCyclic : (Finite G) := by
   -- using zpowers g and Infinite G to get that orderOg g is 0
   have horder : orderOf g = 0 := by
     by_contra h0
-    have hfin : Finite (Subgroup.zpowers g) := by exact Finite_of_FinOrder_Generator g h0
+    have hfin : Finite (Subgroup.zpowers g) := by exact finiteOfFinOrderGenerator g h0
     haveI : Finite ((⊤ : Subgroup G)) := by simpa [hg] using hfin
     -- transfer the Finiteness through surjection into G，to get contradiction
     have hfinG : Finite G :=
@@ -71,7 +61,6 @@ lemma FiniteOfSimpleCyclic : (Finite G) := by
   have := IsSimpleGroup.eq_bot_or_eq_top_of_normal (H := H) Hnorm
   rcases this <;> contradiction
 
-
 /-！Main theorem : if G is an abelian simple group then G ≃* Zₚ for some prime p. -/
 theorem AbelianSimpleGroupIsoOfZp : ∃ p : ℕ , (Nat.Prime p) ∧ Nonempty (Additive G ≃+ ZMod p) := by
   have hcyc : IsCyclic G := by infer_instance -- a simple abelian group is cyclic
@@ -87,5 +76,5 @@ theorem AbelianSimpleGroupIsoOfZp : ∃ p : ℕ , (Nat.Prime p) ∧ Nonempty (Ad
   · refine Nonempty.intro ?_
     rw [← orderG]
     have e : ZMod (Nat.card G) ≃+ Additive G := by
-      simpa using (addIso_from_zmod_natcard (G := G))
+      simpa using zmodAddCyclicAddEquiv (G := Additive G) (by infer_instance)
     exact e.symm

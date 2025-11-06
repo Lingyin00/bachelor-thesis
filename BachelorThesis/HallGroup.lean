@@ -15,11 +15,11 @@ Exercise 3.3.10 `Hall Group`
 variable {K : Type*} [Group K] [Fintype K] (N H : Subgroup K) [N.Normal]
 
 /-! The definition of Hall Group-/
-def IsHallGroup (H : Subgroup K): Prop :=
-  Nat.Coprime H.index (Nat.card H)
+def IsHallGroup (H : Subgroup K) : Prop := Nat.Coprime H.index (Nat.card H)
 
 theorem HallGrpwithNormalIsHall (H : Subgroup K) (hH : IsHallGroup H) (N : Subgroup K) [N.Normal] :
-  IsHallGroup (H ⊓ N) := sorry
+    IsHallGroup (H ⊓ N) := by
+  sorry
 
 --example {N : Subgroup K} : Finite (K ⧸ N) := inferInstance
 --example : Group (K ⧸ N) := inferInstance
@@ -28,5 +28,5 @@ def HNmodNisSubgroup (H : Subgroup K) (N : Subgroup K) [N.Normal] : Subgroup (K 
   (H ⊔ N).map (QuotientGroup.mk' N)
 
 theorem CosetsOfQuotientGrpIsHall (H : Subgroup K) (hH : IsHallGroup H)
-    (N : Subgroup K) [N.Normal]: IsHallGroup (HNmodNisSubgroup H N) :=
-  by sorry
+    (N : Subgroup K) [N.Normal] : IsHallGroup (HNmodNisSubgroup H N) := by
+  sorry
