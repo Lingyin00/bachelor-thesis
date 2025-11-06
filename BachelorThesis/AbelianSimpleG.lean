@@ -22,11 +22,10 @@ variable {G : Type*} [CommGroup G] [IsSimpleGroup G]
 -- **this small lemma might be a PR to mathlib**
 @[simp]
 lemma finiteCyclicIffFiniteCarrier  (g : G) (hp : ¬orderOf g = 0) :
-    Finite (Subgroup.zpowers g) = ((Subgroup.zpowers g) : Set G).Finite := by exact rfl
+    Finite (Subgroup.zpowers g) = ((Subgroup.zpowers g) : Set G).Finite := by rfl
 
 /-! Using g to build a finite cyclic group-/
-lemma finiteOfFinOrderGenerator (g : G) (hp : ¬orderOf g = 0) : Finite (Subgroup.zpowers g) := by
-  simp_all
+lemma finiteOfFinOrderGenerator (g : G) (hp : ¬orderOf g = 0) : Finite (Subgroup.zpowers g) := by simp_all
 
 /-! Finitness of an abelian simple group -/
 lemma FiniteOfSimpleCyclic : (Finite G) := by
