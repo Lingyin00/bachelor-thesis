@@ -1,14 +1,4 @@
-import Mathlib.Algebra.Group.Defs
-import Mathlib.Data.ZMod.Defs
-import Mathlib.Data.Nat.Prime.Defs
-import Mathlib.Algebra.Group.Equiv.Defs
-import Mathlib.Algebra.Group.Subgroup.Defs
 import Mathlib.GroupTheory.SpecificGroups.Cyclic
-import Mathlib.Algebra.Group.Subgroup.ZPowers.Basic
-import Mathlib.GroupTheory.OrderOfElement
-import Mathlib.GroupTheory.Subgroup.Simple
-import Mathlib.Algebra.Group.Subgroup.Finite
-import Mathlib.Data.Finite.Defs
 
 noncomputable section -- on the Prop level
 open scoped Classical -- using classical logic
