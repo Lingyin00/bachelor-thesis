@@ -1,7 +1,7 @@
 import Mathlib.GroupTheory.SpecificGroups.Cyclic
 
+
 noncomputable section -- on the Prop level
-open scoped Classical -- using classical logic
 
 /-!
 Exercise 3.4.1 `Abelian Simple Group`
@@ -10,12 +10,17 @@ Exercise 3.4.1 `Abelian Simple Group`
 variable {G : Type*} [CommGroup G] [IsSimpleGroup G]
 
 -- **this small lemma might be a PR to mathlib**
+omit [IsSimpleGroup G] in
 @[simp]
-lemma finiteCyclicIffFiniteCarrier  (g : G) (hp : ¬orderOf g = 0) :
-    Finite (Subgroup.zpowers g) = ((Subgroup.zpowers g) : Set G).Finite := by rfl
+lemma finiteCyclicIffFiniteCarrier (g : G) :
+    Finite (Subgroup.zpowers g) = ((Subgroup.zpowers g) : Set G).Finite := by
+  rfl
 
 /-! Using g to build a finite cyclic group-/
-lemma finiteOfFinOrderGenerator (g : G) (hp : ¬orderOf g = 0) : Finite (Subgroup.zpowers g) := by simp_all
+omit [IsSimpleGroup G] in
+lemma finiteOfFinOrderGenerator (g : G) (hp : ¬orderOf g = 0) :
+    Finite (Subgroup.zpowers g) := by
+  simp_all
 
 /-! Finitness of an abelian simple group -/
 lemma FiniteOfSimpleCyclic : (Finite G) := by
@@ -33,20 +38,46 @@ lemma FiniteOfSimpleCyclic : (Finite G) := by
       Finite.of_surjective (Subtype.val : (⊤ : Subgroup G) → G)
       (by intro x; exact ⟨⟨x, trivial⟩, rfl⟩)
     exact hnf hfinG
-  have H : Subgroup G := Subgroup.zpowers (g ^ 2)
+  let H : Subgroup G := Subgroup.zpowers (g ^ 2)
   have Hnorm : H.Normal := by exact Subgroup.normal_of_comm H
   -- H ≠ ⊤
   have hneq_Top : H ≠ ⊤ := by
     intro htop
-    -- show that odd elements ∈ T but not in H
-    sorry
-  -- H ≠ ⊥
+    have h3 : g ^ 3 ∈ Subgroup.zpowers g := by exact Subgroup.npow_mem_zpowers g 3
+    have hn3 : g ^ 3 ∉ H := by
+      by_contra hn
+      change ∃ z : ℤ  , (g ^ 2) ^ z = g ^ 3 at hn
+      rcases hn with ⟨z, hz⟩
+      have hz₁ : (g ^ (2 : ℤ)) ^ z = g ^ (3 : ℤ) := by simpa [zpow_ofNat] using hz
+      have hz₂ : g ^ (2 * z : ℤ) = g ^ (3 : ℤ) := by simpa [zpow_mul] using hz₁
+      have h1 : g ^ (2 * z - 3 : ℤ) = 1 := by
+        have := congrArg (fun x => x * g ^ (-3 : ℤ)) hz₂
+        simpa [sub_eq_add_neg, zpow_add] using this
+      have hne0 : (2 * z - 3 : ℤ) ≠ 0 := by omega
+      by_cases hg1 : g = 1
+      · simp_all
+      · sorry -- here the contradiction must come from that the order is infinite
+    simp_all
   have hneq_bot : H ≠ ⊥ := by
     intro hbot
     have : Nat.card H = 1 := (Subgroup.eq_bot_iff_card H).mp hbot
-    -- now show that Nat.card H ≠ 1, then we could have False
-    -- in order to show Nat.card H ≠ 1, we show that g ^ 2 ≠ 1
-    sorry
+    have ne : g ^ 2 ≠ (1 : G) := by
+      by_contra he
+      have hh : orderOf g = 2 := by
+        refine orderOf_eq_prime_iff.mpr ?_
+        constructor
+        · assumption
+        · intro hg1
+          have ho1 : orderOf g = 1 := by simp [hg1]
+          have : (0 : ℕ) = 1 := by rw [← horder]; exact ho1
+          exact Nat.zero_ne_one this
+      have h02 : (0 : ℕ) = 2 := by rw [← horder]; exact hh
+      exact (by decide : (0 : ℕ) ≠ 2) h02
+    have hmemZ : g ^ 2 ∈ H := by
+      refine (Subgroup.mem_zpowers_iff).mpr ?_
+      exact ⟨1 , by simp⟩
+    rw [hbot] at hmemZ
+    exact ne hmemZ
   have := IsSimpleGroup.eq_bot_or_eq_top_of_normal (H := H) Hnorm
   rcases this <;> contradiction
 
