@@ -1,6 +1,5 @@
 import Mathlib.GroupTheory.SpecificGroups.Cyclic
 
-
 noncomputable section -- on the Prop level
 
 /-!
@@ -22,6 +21,8 @@ lemma finiteOfFinOrderGenerator (g : G) (hp : ¬orderOf g = 0) :
     Finite (Subgroup.zpowers g) := by
   simp_all
 
+#check isOfFinOrder_iff_pow_eq_one
+
 /-! Finitness of an abelian simple group -/
 lemma FiniteOfSimpleCyclic : (Finite G) := by
   obtain ⟨g, hg⟩ := -- G is cyclic
@@ -40,7 +41,6 @@ lemma FiniteOfSimpleCyclic : (Finite G) := by
     exact hnf hfinG
   let H : Subgroup G := Subgroup.zpowers (g ^ 2)
   have Hnorm : H.Normal := by exact Subgroup.normal_of_comm H
-  -- H ≠ ⊤
   have hneq_Top : H ≠ ⊤ := by
     intro htop
     have h3 : g ^ 3 ∈ Subgroup.zpowers g := by exact Subgroup.npow_mem_zpowers g 3
@@ -55,9 +55,16 @@ lemma FiniteOfSimpleCyclic : (Finite G) := by
         simpa [sub_eq_add_neg, zpow_add] using this
       have hne0 : (2 * z - 3 : ℤ) ≠ 0 := by omega
       by_cases hg1 : g = 1
-      · simp_all
-      · sorry -- here the contradiction must come from that the order is infinite
-    simp_all
+      · simp_all only [Subgroup.zpowers_one_eq_bot, bot_ne_top]
+      · have eqpow : g ^ (2 * z - 3 : ℤ) = g ^ (0 : ℤ) := by
+          simpa [zpow_zero] using h1
+        have : ¬ IsOfFinOrder g := by apply orderOf_eq_zero_iff.mp horder
+        have tors : IsOfFinOrder g := by
+          refine (isOfFinOrder_iff_zpow_eq_one).mpr ?_
+          exact ⟨2 * z - 3, hne0, h1⟩
+        exact this tors
+    simp_all only [not_finite_iff_infinite, orderOf_eq_zero_iff, Subgroup.mem_top,
+      not_true_eq_false]
   have hneq_bot : H ≠ ⊥ := by
     intro hbot
     have : Nat.card H = 1 := (Subgroup.eq_bot_iff_card H).mp hbot
