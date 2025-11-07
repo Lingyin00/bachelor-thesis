@@ -5,17 +5,18 @@
 
 # Bachelor-Thesis
 
-This formalization project follows the narrative of _Chapter 3: Quotient Groups and Homomorphisms_ from _**Abstract Algebra**_ by Dummit & Foote.  
+This formalization project begins with the narrative of _Chapter 3: Quotient Groups and Homomorphisms_ from _**Abstract Algebra**_ by Dummit & Foote.  
 It is built on top of *mathlib*, using its existing formalization of group theory, rather than redefining concepts from scratch.
 
 ## Goal
- - Formalizing selected exercises from Chapter 3 in Lean 4
+ - Formalizing selected exercises from D&F in Lean 4
  - Submiting PRs of possibly interesting and useful lemmas to *mathlib*
 
 ## Theorems
-
+#### Phrase I : Until the Intro talk
 - AbelianSimpleG (from exercise 3.4.1): without the premises that _G_ is *finite*.
 - HallSubgroup (from exercise 3.3.10): concerning the definitions of _Hall Subgroup_ and orders
 - CauchyAbelian : the abelian group version of Cauchy's theorem
+#### Phrase II : After the Intro talk (appr. from December)
 - to be continued...
 
