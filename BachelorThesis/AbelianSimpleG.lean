@@ -105,3 +105,9 @@ theorem abelianSimpleG_isoOfZMod_prime :
     have e : ZMod (Nat.card G) ≃+ Additive G := by
       simpa using zmodAddCyclicAddEquiv (G := Additive G) (by infer_instance)
     exact e.symm
+
+/-! mathlib assumes finite as premises, but actually it is not necessary
+    *is it also possible for mathlib?* -/
+lemma fintype_abelianSimpleG : Nonempty (Fintype G) := by
+  refine (finite_iff_nonempty_fintype G).mp ?_
+  exact finite_abelianSimple
