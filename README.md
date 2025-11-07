@@ -15,7 +15,7 @@ It is built on top of *mathlib*, using its existing formalization of group theor
 ## Theorems
 
 - AbelianSimpleG (from exercise 3.4.1): without the premises that _G_ is *finite*.
-- HallGroup (from exercise 3.3.10): concerning the definitions of _Hall Group_ and orders
+- HallSubgroup (from exercise 3.3.10): concerning the definitions of _Hall Subgroup_ and orders
 - CauchyAbelian : the abelian group version of Cauchy's theorem
 - to be continued...
 
