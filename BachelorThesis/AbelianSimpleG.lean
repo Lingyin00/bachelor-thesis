@@ -8,7 +8,7 @@ Exercise 3.4.1 `Abelian Simple Group`
 -/
 variable {G : Type*} [CommGroup G] [IsSimpleGroup G]
 
--- **this small lemma might be a PR to mathlib**
+-- **?this small lemma might be a PR to mathlib?**
 omit [IsSimpleGroup G] in
 @[simp]
 lemma finiteCyclic_iff_finiteCarrier (g : G) :
@@ -106,8 +106,7 @@ theorem abelianSimpleG_isoOfZMod_prime :
       simpa using zmodAddCyclicAddEquiv (G := Additive G) (by infer_instance)
     exact e.symm
 
-/-! mathlib assumes finite as premises, but actually it is not necessary
-    *is it also possible for mathlib?* -/
+/-**?** mathlib assumes finite as premises, but actually it is not necessary-/
 lemma fintype_abelianSimpleG : Nonempty (Fintype G) := by
   refine (finite_iff_nonempty_fintype G).mp ?_
   exact finite_abelianSimple

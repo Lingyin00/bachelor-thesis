@@ -13,22 +13,20 @@ Exercise 3.3.10 `Hall Subgroup`
 -- Prove that if H is a Hall subgroup of G and N is the normal subgroup of G,
 -- then H ⊓ N is a Hall subgroup of N and HN ⧸ N is a Hall subgroup of G ⧸ N.
 -/
-#check Subgroup.index_eq_card
-#check Subgroup.card_mul_index
 
 variable {G : Type*} [Group G] [Fintype G]
+
 /-! The definition of Hall Group-/
 abbrev IsHallSubgroup (H : Subgroup G) : Prop := Nat.Coprime H.index (Nat.card H)
---noncomputable def n (H : Subgroup G) : ℕ := H.index
 
-/-！Prove that H ⊓ N is a Hall subgroup of N-/
-theorem HallGrpwithNormalIsHall (H : Subgroup G) (hH : Nat.Coprime H.index (Nat.card H))
-    (N : Subgroup G) [N.Normal] : Nat.Coprime (H ⊓ N).index (Nat.card (H ⊓ N : Subgroup G)) := by
-  have hH : (Nat.card H : ℕ) ∣  Nat.card G := by exact Subgroup.card_subgroup_dvd_card H
-  obtain ⟨n, hn⟩ := hH
-  have : H.index = n := by sorry
-  have hpn: n.Coprime (Nat.card ↥H) := by simpa [this] using hH
-  -- clue: focusing the divisibility and prime translation in equations
+/-! The definition that H ⊓ N is a subgroup of N-/
+def inter_of_subHN (H : Subgroup G) (N : Subgroup G) [N.Normal] : Subgroup N :=
+  (H ⊓ N).comap N.subtype
+
+/-! Prove that H ⊓ N is a Hall Subgroup of N-/
+theorem inter_of_hall_nor_is_Hall (H : Subgroup G) (hH : Nat.Coprime H.index (Nat.card H))
+    (N : Subgroup G) [N.Normal] :
+    Nat.Coprime (inter_of_subHN H N).index (Nat.card (inter_of_subHN H N)) := by
   sorry
 
 /-! The definition that HN ⧸ N is a subgroup of G ⧸ N-/
