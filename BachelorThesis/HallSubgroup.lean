@@ -6,7 +6,10 @@ import Mathlib.GroupTheory.Index
 --import Mathlib.GroupTheory.Coset.Card
 --import Mathlib.GroupTheory.Coset.Defs
 import Init.Data.Nat.Lemmas
+import Mathlib.Data.Fintype.Card
 
+noncomputable section
+open scoped Pointwise
 /-!
 Exercise 3.3.10 `Hall Subgroup`
 -- A subgroup H of a finite group G is called a Hall Subgroup of G if (|G : H|, |H|) = 1.
@@ -27,7 +30,14 @@ def inter_of_subHN (H : Subgroup G) (N : Subgroup G) [N.Normal] : Subgroup N :=
 theorem inter_of_hall_nor_is_Hall (H : Subgroup G) (hH : Nat.Coprime H.index (Nat.card H))
     (N : Subgroup G) [N.Normal] :
     Nat.Coprime (inter_of_subHN H N).index (Nat.card (inter_of_subHN H N)) := by
-  sorry
+  set K : Subgroup N := inter_of_subHN H N
+  apply (Nat.coprime_iff_gcd_eq_one).mpr
+  have hgcd :
+    Nat.gcd K.index (Nat.card K) ∣ Nat.gcd H.index (Nat.card H) := by
+      sorry
+  have : Nat.gcd H.index (Nat.card H) = 1 := Nat.coprime_iff_gcd_eq_one.mp hH
+  have : Nat.gcd K.index (Nat.card K) = 1 := by exact Nat.dvd_one.mp (by simpa [this] using hgcd)
+  exact this
 
 /-! The definition that HN ⧸ N is a subgroup of G ⧸ N-/
 def HNmodNisSubgroup (H : Subgroup G) (N : Subgroup G) [N.Normal] : Subgroup (G ⧸ N) :=
