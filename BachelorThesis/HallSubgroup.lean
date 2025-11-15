@@ -1,15 +1,8 @@
---import Mathlib.Algebra.Group.Defs
---import Mathlib.Algebra.Group.Subgroup.Defs
 import Mathlib.GroupTheory.Index
---import Mathlib.Algebra.Quotient
---import Mathlib.GroupTheory.QuotientGroup.Defs
---import Mathlib.GroupTheory.Coset.Card
---import Mathlib.GroupTheory.Coset.Defs
 import Init.Data.Nat.Lemmas
---import Mathlib.Data.Fintype.Card
 
 noncomputable section
---open scoped Pointwise
+
 /-!
 Exercise 3.3.10 `Hall Subgroup`
 -- A subgroup H of a finite group G is called a Hall Subgroup of G if (|G : H|, |H|) = 1.
@@ -27,21 +20,39 @@ abbrev inter_of_subHN (H : Subgroup G) (N : Subgroup G) [N.Normal] : Subgroup N 
   (H ⊓ N).comap N.subtype -- this might be unnecessary by using relIndex from the mathlib def.
 #check H.relIndex N
 
-/-! The definition that H ⊓ N is a subgroup of G-/
+/-! The definition that H ⊔ N is a subgroup of G-/
 abbrev HN (H : Subgroup G) (N : Subgroup G) [N.Normal] : Subgroup G := H ⊔ N
 
-/-! Prove that H ⊓ N is a Hall Subgroup of N-/
+/- *possilbe lemma to mathlib?*-/
+-- the cardinality of HN are equal, no matter if we count it in subgroup H or in subgroup G
+lemma card_comap_subtype (H K : Subgroup G) (hKH : K ≤ H) :
+    Nat.card ((K.comap H.subtype : Subgroup H)) = Nat.card K := by
+  simp_all only [Subgroup.comap_subtype]
+  let e : (K.subgroupOf H) ≃ K := sorry
+  exact Nat.card_congr e
 
+/-! Prove that H ⊓ N is a Hall Subgroup of N-/
 theorem inter_of_hallSub_normal_is_Hall_new (H : Subgroup G) (hH : Nat.Coprime H.index (Nat.card H))
     (N : Subgroup G) [N.Normal] :
     Nat.Coprime (H.relIndex N) (Nat.card (H ⊓ N : Subgroup G)) := by
   apply (Nat.coprime_iff_gcd_eq_one).mpr
   have hgcd :
       Nat.gcd (H.relIndex N) (Nat.card (H ⊓ N : Subgroup G)) ∣ Nat.gcd H.index (Nat.card H) := by
+    -- using the 2.Isomorphism theorem
     have h1 : Nat.gcd (H.relIndex N) (Nat.card (H ⊓ N : Subgroup G)) ∣ H.index := by
       sorry
     have h2 : Nat.gcd (H.relIndex N) (Nat.card (H ⊓ N : Subgroup G)) ∣ Nat.card H := by
-      sorry
+      have hLag : Nat.card (H ⊓ N : Subgroup G) ∣ Nat.card H := by
+        let HN_in_H : Subgroup H := (H ⊓ N : Subgroup G).comap H.subtype
+        have hCardEq : Nat.card HN_in_H = Nat.card (H ⊓ N : Subgroup G) := by
+          refine card_comap_subtype H (H ⊓ N) ?_
+          simp_all only [Subgroup.mem_inf, inf_le_left]
+        rw [← hCardEq]
+        apply Subgroup.card_subgroup_dvd_card   -- using Lagrange's theorem
+      have hgcd :
+          Nat.gcd (H.relIndex N) (Nat.card (H ⊓ N : Subgroup G))∣ Nat.card (H ⊓ N : Subgroup G) :=
+        Nat.gcd_dvd_right _ _
+      exact Nat.dvd_trans hgcd hLag
     exact Nat.dvd_gcd h1 h2
   have : Nat.gcd H.index (Nat.card H) = 1 := Nat.coprime_iff_gcd_eq_one.mp hH
   have : Nat.gcd (H.relIndex N) (Nat.card (H ⊓ N : Subgroup G)) = 1 := by
