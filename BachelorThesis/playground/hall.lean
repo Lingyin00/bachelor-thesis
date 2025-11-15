@@ -23,7 +23,12 @@ lemma order_union_of_left_cosets (H : Subgroup G) (N : Subgroup G) :
     Nat.card (⋃ h : H, h • N : Set G) =
     (Nat.card H * Nat.card N) / Nat.card ((H ∩ N : Set G)) := by
   sorry
-
+/-*using the mathlib definition if my method cannot work* -/
+theorem inter_of_hallSub_normal_is_Hall_one (H : Subgroup G) (hH : Nat.Coprime H.index (Nat.card H))
+    (N : Subgroup G) [N.Normal] :
+    Nat.Coprime (H.relIndex N) (Nat.card (H ⊓ N : Subgroup G)) := by
+  apply (Nat.coprime_iff_gcd_eq_one).mpr
+  sorry
 
 -- /- **?** this trival result shoud be added in mathlib? or is it already exist -/
 -- lemma index_eq_of_mul_eq_mul  {n : ℕ} (H : Subgroup G)

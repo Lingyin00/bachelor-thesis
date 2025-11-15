@@ -13,10 +13,10 @@ It is built on top of *mathlib*, using its existing formalization of group theor
  - Submiting PRs of possibly interesting and useful lemmas to *mathlib*
 
 ## Theorems
-#### Phrase I : Until the Intro talk
+#### Phase I : Until the Intro talk
 - AbelianSimpleG (from exercise 3.4.1): without the premises that _G_ is *finite*.
 - HallSubgroup (from exercise 3.3.10): concerning the definitions of _Hall Subgroup_ and orders
 - CauchyAbelian : the abelian group version of Cauchy's theorem
-#### Phrase II : After the Intro talk (appr. from December)
+#### Phase II : After the Intro talk (appr. from December)
 - to be continued...
 
