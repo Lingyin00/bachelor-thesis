@@ -48,3 +48,6 @@ theorem inter_of_hallSub_normal_is_Hall_one (H : Subgroup G) (hH : Nat.Coprime H
 --   have hpn: n.Coprime (Nat.card ↥H) := by simpa [this] using hH
 --   -- clue: focusing the divisibility and prime translation in equations
 --   sorry
+
+#check Subgroup.subgroupOf
+/- *Note the equation*  `subgroupOf K = Subgroup.comap K.subtype H`-/

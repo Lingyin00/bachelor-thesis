@@ -24,13 +24,11 @@ abbrev inter_of_subHN (H : Subgroup G) (N : Subgroup G) [N.Normal] : Subgroup N 
 /-! The definition that H ⊔ N is a subgroup of G-/
 abbrev HN (H : Subgroup G) (N : Subgroup G) [N.Normal] : Subgroup G := H ⊔ N
 
-/- *possilbe lemma to mathlib?*-/
--- the cardinality of HN are equal, no matter if we count it in subgroup H or in subgroup G
-lemma card_comap_subtype (H K : Subgroup G) (hKH : K ≤ H) :
-    Nat.card ((K.comap H.subtype : Subgroup H)) = Nat.card K := by
-  simp_all only [Subgroup.comap_subtype]
-  let e : (K.subgroupOf H) ≃ K := sorry
-  exact Nat.card_congr e
+#check QuotientGroup.quotientInfEquivProdNormalizerQuotient
+#check Subgroup.subgroupOf
+lemma snd_iso_index (H N : Subgroup G) (hLE : H ≤ N.normalizer) :
+    Nat.card (↥H ⧸ N.subgroupOf H) = Nat.card (↥(H ⊔ N) ⧸ N.subgroupOf (H ⊔ N)) := by
+  sorry
 
 /-! Prove that H ⊓ N is a Hall Subgroup of N-/
 theorem inter_of_hallSub_normal_is_Hall_new (H : Subgroup G) (hH : Nat.Coprime H.index (Nat.card H))
@@ -47,24 +45,34 @@ theorem inter_of_hallSub_normal_is_Hall_new (H : Subgroup G) (hH : Nat.Coprime H
             exact Eq.symm (Subgroup.index_mul_card H)
           have card_G_two : Nat.card G = (H ⊔ N).index * Nat.card (H ⊔ N : Subgroup G):= by
             exact Eq.symm (Subgroup.index_mul_card (H ⊔ N))
-          have iso : (H ⊓ N).comap H.subtype  ≃* (H ⊔ N).map (QuotientGroup.mk' N) := by
+          have h_index : Nat.card H =
+              Nat.card (↥H ⧸ N.subgroupOf H) * Nat.card (H ⊓ N : Subgroup G) := by
             sorry
-          have index_iso : ((H ⊓ N).comap H.subtype).index =
-            ((H ⊔ N).map (QuotientGroup.mk' N)).index := by
-              sorry --should somehow use Subgroup.index_map_equiv
-          sorry
+          have n_index : Nat.card N =
+              H.relIndex N * Nat.card (H ⊓ N : Subgroup G) := by
+            sorry
+          have hn_index : Nat.card (H ⊔ N : Subgroup G) =
+              Nat.card (↥(H ⊔ N) ⧸ N.subgroupOf (H ⊔ N)) * Nat.card N := by
+            sorry
+          rw [h_index] at card_G_one
+          rw [hn_index] at card_G_two
+          rw [card_G_one, snd_iso_index, n_index] at card_G_two
+          simp only [mul_comm, mul_left_comm, mul_assoc] at card_G_two
+          apply mul_left_cancel₀ at card_G_two
+          rw [← mul_assoc] at card_G_two
+          apply mul_right_cancel₀ at card_G_two
+          · assumption
+          · sorry
+          · sorry
+          · exact Subgroup.le_normalizer_of_normal
         exact Dvd.intro_left (H ⊔ N).index (id (Eq.symm hIndex))
       have h : (H.relIndex N).gcd (Nat.card ↥(H ⊓ N)) ∣ H.relIndex N :=
         Nat.gcd_dvd_left _ _
       exact Nat.dvd_trans h this
     have h2 : Nat.gcd (H.relIndex N) (Nat.card (H ⊓ N : Subgroup G)) ∣ Nat.card H := by
       have hLag : Nat.card (H ⊓ N : Subgroup G) ∣ Nat.card H := by
-        let HN_in_H : Subgroup H := (H ⊓ N : Subgroup G).comap H.subtype
-        have hCardEq : Nat.card HN_in_H = Nat.card (H ⊓ N : Subgroup G) := by
-          refine card_comap_subtype H (H ⊓ N) ?_
-          simp_all only [Subgroup.mem_inf, inf_le_left]
-        rw [← hCardEq]
-        apply Subgroup.card_subgroup_dvd_card   -- using Lagrange's theorem
+        apply Subgroup.card_dvd_of_le
+        exact inf_le_left
       have hgcd :
           Nat.gcd (H.relIndex N) (Nat.card (H ⊓ N : Subgroup G))∣ Nat.card (H ⊓ N : Subgroup G) :=
         Nat.gcd_dvd_right _ _
