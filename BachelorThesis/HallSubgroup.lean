@@ -1,5 +1,6 @@
 import Mathlib.GroupTheory.Index
 import Init.Data.Nat.Lemmas
+import Mathlib.GroupTheory.QuotientGroup.Basic
 
 noncomputable section
 
@@ -40,7 +41,22 @@ theorem inter_of_hallSub_normal_is_Hall_new (H : Subgroup G) (hH : Nat.Coprime H
       Nat.gcd (H.relIndex N) (Nat.card (H ⊓ N : Subgroup G)) ∣ Nat.gcd H.index (Nat.card H) := by
     -- using the 2.Isomorphism theorem
     have h1 : Nat.gcd (H.relIndex N) (Nat.card (H ⊓ N : Subgroup G)) ∣ H.index := by
-      sorry
+      have : H.relIndex N ∣ H.index := by
+        have hIndex : H.index = (H ⊔ N).index * H.relIndex N := by
+          have card_G_one : Nat.card G = H.index * Nat.card H := by
+            exact Eq.symm (Subgroup.index_mul_card H)
+          have card_G_two : Nat.card G = (H ⊔ N).index * Nat.card (H ⊔ N : Subgroup G):= by
+            exact Eq.symm (Subgroup.index_mul_card (H ⊔ N))
+          have iso : (H ⊓ N).comap H.subtype  ≃* (H ⊔ N).map (QuotientGroup.mk' N) := by
+            sorry
+          have index_iso : ((H ⊓ N).comap H.subtype).index =
+            ((H ⊔ N).map (QuotientGroup.mk' N)).index := by
+              sorry --should somehow use Subgroup.index_map_equiv
+          sorry
+        exact Dvd.intro_left (H ⊔ N).index (id (Eq.symm hIndex))
+      have h : (H.relIndex N).gcd (Nat.card ↥(H ⊓ N)) ∣ H.relIndex N :=
+        Nat.gcd_dvd_left _ _
+      exact Nat.dvd_trans h this
     have h2 : Nat.gcd (H.relIndex N) (Nat.card (H ⊓ N : Subgroup G)) ∣ Nat.card H := by
       have hLag : Nat.card (H ⊓ N : Subgroup G) ∣ Nat.card H := by
         let HN_in_H : Subgroup H := (H ⊓ N : Subgroup G).comap H.subtype
