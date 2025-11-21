@@ -25,11 +25,11 @@ lemma finite_finOrder_zpow (g : G) (hp : ¬orderOf g = 0) :
 #check isOfFinOrder_iff_zpow_eq_one
 
 /-! Finitness of an abelian simple group -/
-lemma finite_abelianSimple : (Finite G) := by
+lemma finite_abelianSimple : Finite G := by
   obtain ⟨g, hg⟩ := -- G is cyclic
     (isCyclic_iff_exists_zpowers_eq_top : IsCyclic G ↔ _).mp (by infer_instance)
   by_contra hnf
-  have hne : Nonempty G := ⟨(1 : G)⟩
+
   -- using zpowers g and Infinite G to get that orderOg g is 0
   have horder : orderOf g = 0 := by
     by_contra h0
@@ -105,6 +105,10 @@ theorem abelianSimpleG_isoOfZMod_prime :
     have e : ZMod (Nat.card G) ≃+ Additive G := by
       simpa using zmodAddCyclicAddEquiv (G := Additive G) (by infer_instance)
     exact e.symm
+
+example : Nat.Prime (Nat.card G) := by
+  letI := finite_abelianSimple (G := G)
+  apply IsSimpleGroup.prime_card
 
 /-**?** mathlib assumes finite as premises, but actually it is not necessary-/
 lemma fintype_abelianSimpleG : Nonempty (Fintype G) := by

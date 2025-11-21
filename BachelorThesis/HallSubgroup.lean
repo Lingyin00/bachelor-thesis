@@ -46,26 +46,26 @@ theorem inter_of_hallSub_normal_is_Hall_new (H : Subgroup G) (hH : Nat.Coprime H
           have card_G_two : Nat.card G = (H ⊔ N).index * Nat.card (H ⊔ N : Subgroup G):= by
             exact Eq.symm (Subgroup.index_mul_card (H ⊔ N))
           have h_index : Nat.card H =
-              Nat.card (↥H ⧸ N.subgroupOf H) * Nat.card (H ⊓ N : Subgroup G) := by
-            sorry
+              Nat.card (↥H ⧸ N.subgroupOf H) * Nat.card (N.subgroupOf H) := by
+            apply Subgroup.card_eq_card_quotient_mul_card_subgroup
           have n_index : Nat.card N =
-              H.relIndex N * Nat.card (H ⊓ N : Subgroup G) := by
-            sorry
+              H.relIndex N * Nat.card (N.subgroupOf H) := by
+                --have : H.relIndex N = Nat.card (N ⧸ N.subgroupOf H) := sorry
+                sorry
           have hn_index : Nat.card (H ⊔ N : Subgroup G) =
               Nat.card (↥(H ⊔ N) ⧸ N.subgroupOf (H ⊔ N)) * Nat.card N := by
             sorry
           rw [h_index] at card_G_one
           rw [hn_index] at card_G_two
           rw [card_G_one, snd_iso_index, n_index] at card_G_two
-          simp only [mul_comm, mul_left_comm, mul_assoc] at card_G_two
-          apply mul_left_cancel₀ at card_G_two
+          simp only [mul_comm, mul_assoc] at card_G_two
+         -- apply mul_left_cancel₀ at card_G_two
           rw [← mul_assoc] at card_G_two
-          apply mul_right_cancel₀ at card_G_two
-          · assumption
           · sorry
           · sorry
-          · exact Subgroup.le_normalizer_of_normal
-        exact Dvd.intro_left (H ⊔ N).index (id (Eq.symm hIndex))
+        sorry
+
+        --exact Dvd.intro_left (H ⊔ N).index (id (Eq.symm hIndex))
       have h : (H.relIndex N).gcd (Nat.card ↥(H ⊓ N)) ∣ H.relIndex N :=
         Nat.gcd_dvd_left _ _
       exact Nat.dvd_trans h this
