@@ -1,7 +1,7 @@
 import Mathlib.GroupTheory.SpecificGroups.Cyclic
 
 noncomputable section -- on the Prop level
-
+set_option trace.Meta.synthInstance true
 /-!
 Exercise 3.4.1 `Abelian Simple Group`
 -- Prove that if G is an abelian simple group then G ≃* Zₚ for some prime p

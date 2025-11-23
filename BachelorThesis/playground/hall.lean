@@ -8,6 +8,7 @@ import Mathlib.GroupTheory.Index
   first lemma, the cardinality of HN(the union of unique left cosets) is problematic, since
   left coset is defined on set, counting on set arouses non-trival type problems for later proof.
 -/
+set_option trace.Meta.synthInstance true
 open scoped Pointwise
 /-*This file contains the scratch during the proof of HallSubgroup.lean*-/
 #check Subgroup.subtype
@@ -23,6 +24,11 @@ lemma order_union_of_left_cosets (H : Subgroup G) (N : Subgroup G) :
     Nat.card (⋃ h : H, h • N : Set G) =
     (Nat.card H * Nat.card N) / Nat.card ((H ∩ N : Set G)) := by
   sorry
+/- *vs. computation on structure*-/
+lemma snd_iso_index (H N : Subgroup G) (hLE : H ≤ N.normalizer) :
+    Nat.card (↥H ⧸ N.subgroupOf H) = Nat.card (↥(H ⊔ N) ⧸ N.subgroupOf (H ⊔ N)) := by
+  sorry
+
 /-*using the mathlib definition if my method cannot work* -/
 theorem inter_of_hallSub_normal_is_Hall_one (H : Subgroup G) (hH : Nat.Coprime H.index (Nat.card H))
     (N : Subgroup G) [N.Normal] :

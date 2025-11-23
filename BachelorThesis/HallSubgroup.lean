@@ -3,7 +3,7 @@ import Init.Data.Nat.Lemmas
 import Mathlib.GroupTheory.QuotientGroup.Basic
 
 noncomputable section
-
+--set_option trace.Meta.synthInstance true
 /-!
 Exercise 3.3.10 `Hall Subgroup`
 -- A subgroup H of a finite group G is called a Hall Subgroup of G if (|G : H|, |H|) = 1.
@@ -26,9 +26,10 @@ abbrev HN (H : Subgroup G) (N : Subgroup G) [N.Normal] : Subgroup G := H ⊔ N
 
 #check QuotientGroup.quotientInfEquivProdNormalizerQuotient
 #check Subgroup.subgroupOf
+#check Nat.card_eq_of_bijective
 lemma snd_iso_index (H N : Subgroup G) (hLE : H ≤ N.normalizer) :
     Nat.card (↥H ⧸ N.subgroupOf H) = Nat.card (↥(H ⊔ N) ⧸ N.subgroupOf (H ⊔ N)) := by
-  sorry
+  sorry -- Next I need to clarify the right ambient type on each level
 
 /-! Prove that H ⊓ N is a Hall Subgroup of N-/
 theorem inter_of_hallSub_normal_is_Hall_new (H : Subgroup G) (hH : Nat.Coprime H.index (Nat.card H))
@@ -37,7 +38,6 @@ theorem inter_of_hallSub_normal_is_Hall_new (H : Subgroup G) (hH : Nat.Coprime H
   apply (Nat.coprime_iff_gcd_eq_one).mpr
   have hgcd :
       Nat.gcd (H.relIndex N) (Nat.card (H ⊓ N : Subgroup G)) ∣ Nat.gcd H.index (Nat.card H) := by
-    -- using the 2.Isomorphism theorem
     have h1 : Nat.gcd (H.relIndex N) (Nat.card (H ⊓ N : Subgroup G)) ∣ H.index := by
       have : H.relIndex N ∣ H.index := by
         have hIndex : H.index = (H ⊔ N).index * H.relIndex N := by
@@ -45,27 +45,44 @@ theorem inter_of_hallSub_normal_is_Hall_new (H : Subgroup G) (hH : Nat.Coprime H
             exact Eq.symm (Subgroup.index_mul_card H)
           have card_G_two : Nat.card G = (H ⊔ N).index * Nat.card (H ⊔ N : Subgroup G):= by
             exact Eq.symm (Subgroup.index_mul_card (H ⊔ N))
+          -- H, HN, N index decomposition
           have h_index : Nat.card H =
               Nat.card (↥H ⧸ N.subgroupOf H) * Nat.card (N.subgroupOf H) := by
             apply Subgroup.card_eq_card_quotient_mul_card_subgroup
-          have n_index : Nat.card N =
-              H.relIndex N * Nat.card (N.subgroupOf H) := by
-                --have : H.relIndex N = Nat.card (N ⧸ N.subgroupOf H) := sorry
-                sorry
+          have hn_index_in_HN : Nat.card (H ⊔ N : Subgroup G) =
+              Nat.card (↥(H ⊔ N) ⧸ N.subgroupOf (H ⊔ N)) * Nat.card (N.subgroupOf (H ⊔ N)) := by
+            exact Subgroup.card_eq_card_quotient_mul_card_subgroup (N.subgroupOf (H ⊔ N))
+          have hN : Nat.card (N.subgroupOf (H ⊔ N)) = Nat.card N := by
+            sorry -- the cardinality of N shouldn't change, when the ambient type changes
           have hn_index : Nat.card (H ⊔ N : Subgroup G) =
               Nat.card (↥(H ⊔ N) ⧸ N.subgroupOf (H ⊔ N)) * Nat.card N := by
-            sorry
+            rw [hN] at hn_index_in_HN
+            assumption
+          have n_index : Nat.card N =
+              H.relIndex N * Nat.card (H.subgroupOf N) := by
+            apply Subgroup.card_eq_card_quotient_mul_card_subgroup (H.subgroupOf N)
           rw [h_index] at card_G_one
-          rw [hn_index] at card_G_two
-          rw [card_G_one, snd_iso_index, n_index] at card_G_two
-          simp only [mul_comm, mul_assoc] at card_G_two
-         -- apply mul_left_cancel₀ at card_G_two
-          rw [← mul_assoc] at card_G_two
-          · sorry
-          · sorry
-        sorry
-
-        --exact Dvd.intro_left (H ⊔ N).index (id (Eq.symm hIndex))
+          rw [card_G_one, hn_index, n_index] at card_G_two
+          -- *using the 2.Isomorphism theorem Index Version*
+          rw [snd_iso_index] at card_G_two
+          · have : Nat.card ↥(N.subgroupOf H) = Nat.card ↥(H.subgroupOf N) := by
+              sorry --the same idea as above
+            rw [← this] at card_G_two
+            simp [mul_comm] at card_G_two
+            have neq01 : Nat.card ↥(N.subgroupOf H) ≠ 0 := by
+              simpa [Nat.card_eq_fintype_card] using (by sorry) -- this follows from [Fintype G]
+            have neq02 : Nat.card (↥(H ⊔ N) ⧸ N.subgroupOf (H ⊔ N)) ≠ 0 := by
+              simpa [Nat.card_eq_fintype_card] using (by sorry)
+            have hq :
+                H.index * (Nat.card ↥(N.subgroupOf H) *
+                Nat.card (↥(H ⊔ N) ⧸ N.subgroupOf (H ⊔ N))) =
+                ((H ⊔ N).index * H.relIndex N) * (Nat.card ↥(N.subgroupOf H) *
+                Nat.card (↥(H ⊔ N) ⧸ N.subgroupOf (H ⊔ N))) := by
+              simpa [mul_comm, mul_left_comm, mul_assoc] using card_G_two
+            simp_all only [Nat.card_eq_fintype_card, ne_eq, mul_eq_mul_right_iff, mul_eq_zero,
+              or_self, or_false]
+          · exact Subgroup.le_normalizer_of_normal
+        exact Dvd.intro_left (H ⊔ N).index (id (Eq.symm hIndex))
       have h : (H.relIndex N).gcd (Nat.card ↥(H ⊓ N)) ∣ H.relIndex N :=
         Nat.gcd_dvd_left _ _
       exact Nat.dvd_trans h this
